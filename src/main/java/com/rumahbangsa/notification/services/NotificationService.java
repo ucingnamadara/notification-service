@@ -37,7 +37,7 @@ public class NotificationService {
     @Incoming("send-email-html")
     @Merge(Merge.Mode.MERGE)
     @SuppressWarnings("unchecked")
-    private CompletableFuture<Void> incomingSendEmailHtml(Message<String> message){
+    public CompletableFuture<Void> incomingSendEmailHtml(Message<String> message){
         return managedExecutor.runAsync(threadContext.contextualRunnable(()->{
             try {
                 Map<String, Object> payload = om.readValue(message.getPayload(), Map.class);
@@ -45,7 +45,6 @@ public class NotificationService {
                 String body = (String) payload.get("body");
                 String subject = (String) payload.get("subject");
                 String to = (String) payload.get("to");
-
                 mailer.send(Mail.withHtml(to, subject, body));
 
                 message.ack();
